@@ -1,0 +1,248 @@
+\documentclass[99-notes-packed.tex]{subfiles}
+
+\begin{document}
+
+% \paragraph*{Specification vs. Implementation}
+% \underbar{\textit{Specification}} describes what a system ought to satisfy and perform. \textbf{A \textit{formal specification}}, in particular, \textbf{is a specification derived using formal methods that ensure the required properties of some problem at hand}. A formal specification of a distributed system often comes in (at least) 2 parts:
+
+% \begin{enumerate}
+%     \item \textbf{
+%         \textit{Requirements} imposed on the system -- i.e., a list of properties that the system should satisfy (e.g., safety / liveness properties).
+%         \label{def.spec.requirements}
+%     }
+%     \item \textbf{
+%         \textit{Operations} of the system, which describes the behavior (i.e., satisfiability of predicates) given interactions (e.g., effects of communication).
+%         \label{def.spec.operations}
+%     }
+% \end{enumerate}
+
+% In total, a formal specification is then used to verify the following:
+
+% \begin{enumerate}
+%     \item {
+%         Guarantee that a description of a system really meets the requirements of the same system -- i.e., the specification is correct.
+%     }
+%     \item \textbf{
+%         Ensure that an \underbar{\textit{implementation}} satisfies the specification -- i.e., ensure that any correctness properties that hold for spec. also holds for impl.
+%     }
+% \end{enumerate}
+
+\paragraph*{LTS and Process Graphs}
+Both specifications and implementations could be represented by \underbar{\textit{models of concurrency}}, for example \textit{labelled transition systems (LTS)} or \textit{process graphs}.
+
+\begin{definition}[Process Graph]
+    A \textit{process graph} is a triple $(S, I, \rightarrowtriangle)$ such that:
+    \begin{itemize}
+        \item $S$ a set of states;
+        \item $I \in S$ an \textit{initial state};
+        \item {
+            $\rightarrowtriangle$ a set of triples $(s, a, t)$ each describing a (named) relation $S \rightarrow S$:
+            \begin{itemize}
+                \item $s, t \in S$;
+                \item $a \in {Act}$ -- a set of actions.
+            \end{itemize}
+        }
+    \end{itemize}
+    \label{def.process-graph}
+\end{definition}
+
+\begin{definition}[LTS]
+    Same as \hyperref[def.process-graph]{process graph}, except without an initial state. Sometimes used synonymously with process graphs bc. mathematicians are evil.
+\end{definition}
+
+Alternatively, one may use \textit{process algebraic expressions} to formally represent spec.s and impl.s, for example using \textit{CCS (Calculus of Communicating Systems)}, \textit{CSP (Communicating Sequential Processes)}, and \textit{ACP (Algebra of Communicating Processes)}. \underline{Each semantics is of different expressive power}.
+
+\paragraph*{ACP}
+Define the set of operations:
+\begin{itemize}
+    \item {
+        $\varepsilon$ (successful termination -- $\mathrm{ACP}_{\varepsilon}$ extension).
+    }
+    \item {
+        $\delta$ (deadlock).
+    }
+    \item {
+        $a$ (action constant) for each action $a \in {Act}$.
+
+        Each $a$ describe a \textbf{visible action} -- $\tau \notin {Act}$;
+    }
+    \item {
+        $P \cdot Q$ (sequential composition between processes $P, Q$)
+    }
+    \item {
+        $P + Q$ (summation / choice / alternative composition);
+    }
+    \item {
+        $P || Q$ (parallel composition).
+    }
+    \item {
+        ${\partial}_{H}(P)$ (restriction / encapsulation).
+
+        Given set of (visible) actions $H$, this removes $\forall a \in H$ in $P$.
+
+        Practically this is often used after defining $\gamma(a, b)$ to enforce sync -- via removing non-synced $a.b$ or $b.a$ behaviors;
+    }
+    \item {
+        ${\tau}_{I}(P)$ (abstraction -- $\mathrm{ACP}_{\tau}$ extension).
+
+        Given set of (visible) actions $I$, this converts $\forall a \in I$ into $\tau$ in $P$.
+
+        A $\tau$ action is \textbf{non-observable} -- this will be significant for describing traces \& equivalence relations.
+    }
+    \item {
+        $\gamma: A \times A \rightarrow A$ (partial communication function).
+
+        For example, $\gamma(a, b)$ defines new (synchronized) visible action alongside $a, b$.
+    }
+\end{itemize}
+
+We further define the following transition rules (omitting commutative equivalents). First, transition rules for basic process algebra wrt. termination, sequential composition, and choice:
+\begin{center}
+    \begin{tabular}{ccc}
+        $
+        \begin{prooftree}
+            \infer0{a \xrightarrow{a} \varepsilon}
+        \end{prooftree}
+        $   &
+        $
+        \begin{prooftree}
+            \hypo{a \xrightarrow{a} \varepsilon}
+            \infer1{a + b \xrightarrow{a} \varepsilon}
+        \end{prooftree}
+        $   &
+        $
+        \begin{prooftree}
+            \hypo{a \xrightarrow{a} \varepsilon}
+            \infer1{a \cdot b \xrightarrow{a} b}
+        \end{prooftree}
+        $   \\
+        \\
+        $
+        \begin{prooftree}
+            \hypo{a \xrightarrow{a} a^{'}}
+            \infer1{a + b \xrightarrow{a} a^{'}}
+        \end{prooftree}
+        $   &
+        $
+        \begin{prooftree}
+            \hypo{a \xrightarrow{a} a^{'}}
+            \infer1{a \cdot b \xrightarrow{a} a^{'} \cdot b}
+        \end{prooftree}
+        $   &
+            \\
+    \end{tabular}
+\end{center}
+
+Then, for parallel processes which may or may not communicate: 
+\begin{center}
+    \begin{tabular}{cc}
+        $
+        \begin{prooftree}
+            \hypo{a \xrightarrow{a} \varepsilon}
+            \infer1{a || b \xrightarrow{a} b}
+        \end{prooftree}
+        $   &
+        $
+        \begin{prooftree}
+            \hypo{a \xrightarrow{a} a^{'}}
+            \infer1{a || b \xrightarrow{a} a^{'} || b}
+        \end{prooftree}
+        $   \\
+        \\
+        $
+        \begin{prooftree}
+            \hypo{a \xrightarrow{a} \varepsilon}
+            \hypo{b \xrightarrow{b} \varepsilon}
+            \infer2{a || b \xrightarrow{\gamma(a, b)} \varepsilon}
+        \end{prooftree}
+        $   &
+        $
+        \begin{prooftree}
+            \hypo{a \xrightarrow{a} a^{'}}
+            \hypo{b \xrightarrow{b} \varepsilon}
+            \infer2{a || b \xrightarrow{\gamma(a, b)} a^{'}}
+        \end{prooftree}
+        $   \\
+        \\
+        $
+        \begin{prooftree}
+            \hypo{a \xrightarrow{a} \varepsilon}
+            \hypo{b \xrightarrow{b} b^{'}}
+            \infer2{a || b \xrightarrow{\gamma(a, b)} b^{'}}
+        \end{prooftree}
+        $   &
+        $
+        \begin{prooftree}
+            \hypo{a \xrightarrow{a} a^{'}}
+            \hypo{b \xrightarrow{b} b^{'}}
+            \infer2{a || b \xrightarrow{\gamma(a, b)} a^{'} || b^{'}}
+        \end{prooftree}
+        $   \\
+    \end{tabular}
+\end{center}
+
+Furthermore, for encapsulation ${\partial}_H$: 
+\begin{center}
+    \begin{tabular}{cc}
+        $
+        \begin{prooftree}
+            \hypo{a \xrightarrow{x} \varepsilon}
+            \infer1{\partial_H(a) \xrightarrow{x} \varepsilon}
+        \end{prooftree}\ 
+        x \notin H
+        $   &
+        $
+        \begin{prooftree}
+            \hypo{a \xrightarrow{x} a^{'}}
+            \infer1{{\partial}_H(a) \xrightarrow{x} {\partial}_H(a^{'})}
+        \end{prooftree}\ 
+        x \notin H
+        $   \\
+    \end{tabular}
+\end{center}
+This is to say, $\partial_H(a)$ can execute all transitions of $a$ that are also not in $H$.
+
+Finally, deadlocks \textbf{does not display any behavior} -- that is, a $\delta$ process cannot transition to any other states no matter what (though obviously as a constituent part of e.g., a parallel process the other concurrent constituent can still run). 
+
+\begin{background}[commutativity]
+    \begin{equation*}
+        f(a, b) = f(b, a) \iff f\ \mathrm{commutative}
+    \end{equation*}
+\end{background}
+
+\begin{background}[associativity]
+    \begin{equation*}
+        (a \circ b) \circ c = a \circ (b \circ c) \iff \circ\ \mathrm{associative}
+    \end{equation*}
+\end{background}
+
+\begin{background}[distributivity]
+    \begin{equation*}
+        f(x, a \circ b) = f(x, a) \circ f(x, b) \iff f\ \mathrm{distributes\ over}\ \circ
+    \end{equation*}
+\end{background}
+
+\begin{background}[isomorphism]
+    An isomorphism describes a \textbf{bijective} \textbf{homomorphism}: 
+    \begin{itemize}
+        \item {
+            \textbf{Homomorphism} describes a \textbf{structure-preserving} map between two algebraic \textbf{structures} of the same \textbf{type}: 
+            \begin{itemize}
+                \item {
+                    \textbf{Algebraic structure} describes a set with additional properties -- e.g., an additive group over $\mathbb{N}$, a ring of integers modulo $x$, etc. 
+                }
+                \item {
+                    Two structures of the same \textbf{type} refers to structures with the same name -- e.g., two groups, two rings, etc. 
+                }
+                \item {
+                    A \textbf{structure-preserving} map $f$ between two structures intuitively describes a structure such that, for properties $p \in X$, $q \in Y$ between same-type structures $X, Y$, any tuples $X^n \in p$ accepted by $p$ (e.g., $3 + 5 = 8 \implies (3, 5, 8) \in \mathbb{R}.(+)$) satisfies $\mathsf{map}(f, X^n) \in q$. 
+                }
+            \end{itemize}
+        }
+        \item {
+            \textbf{Bijection} describes a 1-to-1 correspondence between elements of two sets -- i.e., invertible. 
+        }
+    \end{itemize}
+\end{background}
+
+\end{document}

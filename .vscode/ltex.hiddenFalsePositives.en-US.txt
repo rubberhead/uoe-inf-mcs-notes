@@ -1,0 +1,5 @@
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qconcurrent components)\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qconcurrent components).\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qconcurrent components of a system).\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qprocess algebra).\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qalso holds for impl.\\E$"}

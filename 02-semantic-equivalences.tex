@@ -1,0 +1,27 @@
+\documentclass[99-notes-packed.tex]{subfiles}
+
+\begin{document}
+
+\begin{background}[lattice]
+    A \textbf{lattice} describes a real coordinate space $\mathbb{R}^n$ that satisfies: 
+    \begin{itemize}
+        \item {
+            Addition / subtraction between two points always produce another point in lattice -- i.e., closed under addition / subtraction.
+        }
+        \item {
+            Lattice points are separated by bounded distances in some range $(0, \mathrm{max}]$.
+        }
+    \end{itemize}
+\end{background}
+
+Define a lattice over which \textit{semantic equivalence relations} for spec. and impl. verification is defined.
+
+\begin{definition}[discrimination measure]
+    One equivalence relation $\equiv$ is \textbf{finer} / \textbf{more discriminating} than another $\sim$ if each $\equiv$-eq. class is a subset of a $\sim$-eq. class. In other words,
+    \begin{align*}
+            \ &p \equiv q \implies p \sim q \\
+        \iff\ &\equiv\ \mathrm{finer\ than}\ \sim
+    \end{align*}
+\end{definition}
+
+\end{document}

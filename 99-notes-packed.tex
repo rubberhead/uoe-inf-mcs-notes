@@ -1,0 +1,39 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper, margin=1cm]{geometry}
+
+\usepackage{multicol}                       % 2-col formatting
+\usepackage{hyperref}
+\usepackage[english]{babel}                 % theorem environ
+\usepackage{framed}
+\usepackage{mathtools}
+\usepackage{stmaryrd}                       % more arrows
+\usepackage{mathpartir}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{ebproof}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{subfiles}                       % multi-file project
+
+% environment `definition` prints as "Definition" and has counter reset per section.
+\newtheorem{definition}{Definition}[section]
+
+\newtheorem{background}{Background}[section]
+
+\begin{document}
+
+\section{LTS; ACP}
+\begin{multicols*}{2}
+\subfile{01-spec-and-impl}
+\end{multicols*}
+
+\section{Semantic Equivalences}
+\begin{multicols*}{2}
+\subfile{02-semantic-equivalences}
+\end{multicols*}
+
+\end{document}

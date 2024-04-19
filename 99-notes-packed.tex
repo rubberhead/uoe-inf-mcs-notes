@@ -2,7 +2,8 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[a4paper, margin=1cm]{geometry}
+\usepackage[a4paper, margin=0.25cm, landscape]{geometry}
+
 
 \usepackage{multicol}                       % 2-col formatting
 \usepackage{hyperref}
@@ -21,19 +22,23 @@
 
 % environment `definition` prints as "Definition" and has counter reset per section.
 \newtheorem{definition}{Definition}[section]
-
 \newtheorem{background}{Background}[section]
+\newtheorem{example}{Example}[section]
 
 \begin{document}
+\begin{multicols*}{3}
 
 \section{LTS; ACP}
-\begin{multicols*}{2}
 \subfile{01-spec-and-impl}
-\end{multicols*}
 
 \section{Semantic Equivalences}
-\begin{multicols*}{2}
 \subfile{02-semantic-equivalences}
-\end{multicols*}
 
+\section{CCS; SOS}
+\subfile{03-ccs.tex}
+
+\section{Equational Axiomisation}
+\subfile{04-congruence.tex}
+
+\end{multicols*}
 \end{document}

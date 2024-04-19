@@ -1,0 +1,137 @@
+\documentclass[99-notes-packed.tex]{subfiles}
+
+\begin{document}
+\paragraph*{CCS}
+Define the set of operations and semantics: 
+\begin{itemize}
+    \item {
+        $0$ (inaction): 
+        
+        $0$ represents a graph with 1 (initial) state, 0 transitions.
+    }
+    \item {
+        $a, \bar{a}$ (complementary actions): 
+
+        Complementary actions are assumed to communicate / synchronize with one another. 
+    }
+    \item {
+        $a.P$ (action prefix) for each action $a$, process $P$, which:  
+        \begin{enumerate}
+            \item Define new initial state $\mathsf{i}$.
+            \item Creates transition $\mathsf{i} \xrightarrow{a} I_P$.
+        \end{enumerate}
+    }
+    \item {
+        $P + Q$ (summation / choice / alternative composition), where: 
+        \begin{itemize}
+            \item Define new initial state $\mathsf{root}$.
+            \item $\mathrm{States}(P + Q) \coloneqq \mathrm{States}(P) \cup \mathrm{States}(Q) \cup \{\mathsf{root}\}$
+            \item Replace all $I_P \xrightarrow{a} s$ with $\mathsf{root} \xrightarrow{a} s$. 
+            \item Replace all $I_Q \xrightarrow{a} s$ with $\mathsf{root} \xrightarrow{a} s$.
+        \end{itemize}
+    }
+    \item {
+        $P | Q$ (parallel composition).
+
+        This takes the cartesian product of the states of $P, Q$, such that: 
+        \begin{itemize}
+            \item $s \xrightarrow{a} s^{'} \in P \implies \forall t \in Q: (s, t) \xrightarrow{a} (s^{'}, t)$
+            \item $t \xrightarrow{a} t^{'} \in Q \implies \forall s \in P: (s, t) \xrightarrow{a} (s, t^{'})$
+            \item $(s \xrightarrow{a} s^{'} \in P) \wedge (t \xrightarrow{\bar{a}} t^{'} \in Q) \implies (s, t) \xrightarrow{\tau} (s^{'}, t^{'})$
+        \end{itemize}
+
+        Note that \textbf{CCS adheres strictly to a handshaking communication format} -- this differs from ACP which gives greater leeway to implementation, via the use of $\gamma$ operator.
+    }
+    \item {
+        $P{\backslash}a$ (restriction) for each action $a$. 
+
+        This produces copy of $P$ such that all actions $a, \bar{a}$ are omitted. This is useful to remove unsuccessful communication. 
+    }
+    \item {
+        $P[f]$ (relabelling) for each function $f: A \rightarrow A$.
+
+        This replaces each label $a, \bar{a}$ by $f(a), \overline{f(a)}$.
+    }
+\end{itemize}
+
+\paragraph*{Recursion}
+\begin{definition}[process names and expressions]
+    Suppose we bind names $X, Y, Z, \dots$ to some expression in the CCS language: 
+    \begin{equation*}
+        X = P_X
+    \end{equation*}
+    Here, $P_X$ represents ANY expression in the language, possibly including $X$. 
+
+    It is trivial to see this can cause recursive definitions: 
+    \begin{equation*}
+        X = a.X
+    \end{equation*}
+\end{definition}
+
+\begin{definition}[recursive specification]
+    Define \textbf{recursive specification} as partial function $s: X \rightarrow E$: 
+    \begin{itemize}
+        \item $X$: \textbf{recursion variables}. 
+        \item $E$: \textbf{recursion equations} of form $x = P_x$.
+    \end{itemize}
+
+    In general, recursive spec.s are written as follows: 
+    \begin{equation*}
+        \langle x | s \rangle
+    \end{equation*}
+    which reads as ``process $x$ satisfying equation $s$''. 
+\end{definition}
+
+\begin{definition}[guarded recursion]
+    A recursion is \textbf{guarded} if each occurrence of a process name in $P_X$ occurs within the scope of a subexpression $a.P^{'}_X$. 
+    
+    Think of it as being unwind-able such that progress is guaranteed.
+\end{definition}
+
+\paragraph*{Structural Operational Semantics (CCS)}
+\begin{center}
+    \begin{tabular}{cc}
+        $
+        \begin{prooftree}
+            \infer0{a.E \xrightarrow{a} E}
+        \end{prooftree}
+        $   &
+        $
+        \begin{prooftree}
+            \hypo{E_j \xrightarrow{a} E_j^{'}}
+            \infer1{\sum_{i \in I}E_i \xrightarrow{a} E_j^{'}}
+        \end{prooftree}\ (j \in I)
+        $   \\
+        \\
+        $
+        \begin{prooftree}
+            \hypo{E \xrightarrow{a} E^{'}}
+            \infer1{E | F \xrightarrow{a} E^{'} | F}
+        \end{prooftree}
+        $   &
+        $
+        \begin{prooftree}
+            \hypo{E \xrightarrow{a} E^{'}}
+            \hypo{F \xrightarrow{\overline{a}} F^{'}}
+            \infer2{E | F \xrightarrow{\tau} E^{'} | F^{'}}
+        \end{prooftree}
+        $   \\
+        \\
+        $
+        \begin{prooftree}
+            \hypo{E \xrightarrow{a} E^{'}}
+            \hypo{a \notin L \cup \overline{L}}
+            \infer2{E{\backslash}L \xrightarrow{a} E^{'}{\backslash}L}
+        \end{prooftree}
+        $   &
+        $
+        \begin{prooftree}
+            \hypo{E \xrightarrow{a} E^{'}}
+            \infer1{E[f] \xrightarrow{f(a)} E^{'}[f]}
+        \end{prooftree}
+        $   \\
+        \\
+    \end{tabular}
+\end{center}
+
+\end{document}

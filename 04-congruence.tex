@@ -1,0 +1,116 @@
+\documentclass[99-notes-packed.tex]{subfiles}
+
+\begin{document}
+\paragraph*{Congurence}
+If an equivalence relation is a \textit{congurence} for an operator -- i.e., an operator is \textit{compositional} for the equivalence -- then there exists a sort of isomorphism detailed as follows: 
+
+\begin{definition}[congurence]
+    An equivalence $\sim$ is a \textbf{congruence} for a language $\mathcal{L}$ if: 
+    \begin{equation*}
+        \forall C[\ ] \in \mathcal{L}: P \sim Q \implies C[P] \sim C[Q]
+    \end{equation*}
+    where: 
+    \begin{itemize}
+        \item $C[\ ]$ (context) represents a $\mathcal{L}$-expression with a hole in it, plugged (e.g., with $P$) as $C[P]$. 
+    \end{itemize}
+    
+    For example, let $P = a.[\ ]$: 
+    \begin{equation*}
+        \begin{prooftree}
+            \hypo{P = Q}
+            \infer1{a.P = a.Q}
+        \end{prooftree}
+    \end{equation*}
+    Equivalently, we can say that $CCP.(.)$ is compositional under equality ($=$). 
+\end{definition}
+
+\begin{example}[$=_{CT}$ and $\partial_{H}$]
+    This is a counterexample for showing why $=_{CT}$ is NOT a congurence over ACP. Obviously: 
+    \begin{equation*}
+        a.b + a.c =_{CT} a.(b + c)
+    \end{equation*}
+
+    However: 
+    \begin{equation*}
+        \partial_{\{c\}}(a.b + a.c) \neq_{CT} \partial_{\{c\}}(a.(b + c))
+    \end{equation*}
+\end{example}
+
+\begin{definition}[congurence closure]
+    A \textbf{congurence closure} $\sim^c$ of $\sim$ wrt. language $\mathcal{L}$ is defined by: 
+    \begin{equation*}
+        P \sim^{c} Q \iff \forall C[\ ] \in \mathcal{L}: C[P] \sim C[Q]
+    \end{equation*}
+\end{definition}
+
+\paragraph*{Equational Axiomisation}
+In terms of e.g., real addition we describe the operator as possessing e.g., associativity and commutativity, which in turn allows us to do some transformation during analysis, etc. 
+
+Same goes for operators in e.g, CCS: 
+\begin{center}
+    \begin{tabular}{cc}
+        $(P + Q) + R = P + (Q + R)$ & (associativity) \\
+        $P + Q = Q + P$ & (commutativity) \\
+        $P + P = P$ & (idempotence) \\
+        $P + 0 = P$ & ($0$ as neutral element of $+$)
+    \end{tabular}
+\end{center}
+
+\begin{definition}[CCS: expansion theorem]
+    Suppose: 
+    \begin{align*}
+        P \coloneqq& \sum_{i \in I} a_i.P_i \\
+        Q \coloneqq& \sum_{j \in J} b_i.Q_j
+    \end{align*}
+
+    Then, 
+    \begin{align*}
+        P | Q &= \sum_{i \in I} a_i(P_i | Q) \\
+              &+ \sum_{i \in I, j \in J} \tau(P_i | Q_j)\ (\mathrm{given\ }a_i = \overline{b_j}) \\
+              &+ \sum_{j \in J} b_i(P | Q_j)
+    \end{align*}
+
+    Expressions of the form $\sum a.P$ are aka. \textbf{head normal form}.
+\end{definition}
+
+\begin{definition}[Recursive Definition Principle]
+    \begin{equation*}
+        i \in [1, n]: \langle X_i | E \rangle \in \mathsf{Expr}(X_1 \coloneqq \langle X_1 | E \rangle, \dots, X_n \coloneqq \langle X_n | E \rangle)
+    \end{equation*}
+
+    Basically, some series of expressions for $X_1, \dots, X_n$ exists as solution for $E$. 
+\end{definition}
+
+\begin{definition}[Recursive Specification Principle]
+    If there \underline{exists}
+    \begin{equation*}
+        i \in [1, n]: y_i \leftarrow \mathsf{Expr}(y_1, \dots, y_n)
+    \end{equation*}
+    then: 
+    \begin{equation*}
+        i \in [1, n]: y_i = \langle X_i | E \rangle
+    \end{equation*}
+
+    In other words, any $y_{1 \dots n}$ that exists is the sole solution for $E$ modulo bisimulation equivalence. 
+\end{definition}
+
+\paragraph*{Rooted Bisimilarity}
+We note that depending on semantics of $\mathcal{L}$, equivalences may (and in fact likely) fail to be a congurence over $\mathcal{L}$. This also is the case for e.g., branching bisimilarity: $\tau.a =_{BB} a$ but $\tau.a + b \ne_{BB} a + b$. 
+
+ACP and CCS fixes this by changing the equivalence operator. 
+
+\begin{definition}[Rooted Branching Bisimilarity]
+    \begin{align*}
+        P =_{rBB} Q \iff &(P \xrightarrow{a} P^{'} \implies Q \xrightarrow{a} Q^{'} \wedge P^{'} =_{BB} Q^{'})\ \wedge \\
+        &(Q \xrightarrow{a} Q^{'} \implies P \xrightarrow{a} P^{'} \wedge P^{'} =_{BB} Q^{'})
+    \end{align*}
+\end{definition}
+
+\begin{definition}[Rooted Weak Bisimilarity]
+    \begin{align*}
+        P =_{rWB} Q \iff &(P \xrightarrow{a} P^{'} \implies Q \xrightarrow{a} Q^{'} \wedge P^{'} =_{WB} Q^{'})\ \wedge \\
+        &(Q \xrightarrow{a} Q^{'} \implies P \xrightarrow{a} P^{'} \wedge P^{'} =_{WB} Q^{'})
+    \end{align*}
+\end{definition}
+
+\end{document}

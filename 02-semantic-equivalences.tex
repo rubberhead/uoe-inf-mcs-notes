@@ -16,12 +16,200 @@
 
 Define a lattice over which \textit{semantic equivalence relations} for spec. and impl. verification is defined.
 
+\begin{background}[reflexivity]
+    \begin{equation*}
+        \forall x \in X: x \circ x \iff \circ\ \mathrm{reflexive\ on}\ X
+    \end{equation*}
+\end{background}
+
+\begin{background}[symmetry]
+    \begin{equation*}
+        \forall x, y \in X:
+        \begin{prooftree}
+            \hypo{x \circ y}
+            \infer1{y \circ x}
+        \end{prooftree}
+        \iff \circ\ \mathrm{symmetric\ on}\ X
+    \end{equation*}
+\end{background}
+
+\begin{background}[transitivity]
+    \begin{equation*}
+        \forall x, y, z \in X: 
+        \begin{prooftree}
+            \hypo{x \circ y}
+            \hypo{y \circ z}
+            \infer2{x \circ z}
+        \end{prooftree}
+        \iff \circ\ \mathrm{transitive\ on}\ X
+    \end{equation*}
+\end{background}
+
+\begin{background}[equivalence relation]
+    \textbf{Equivalence relation} on set $X$ satisfies reflexivity, symmetry, and transitivity on $X$.
+\end{background}
+
 \begin{definition}[discrimination measure]
     One equivalence relation $\equiv$ is \textbf{finer} / \textbf{more discriminating} than another $\sim$ if each $\equiv$-eq. class is a subset of a $\sim$-eq. class. In other words,
     \begin{align*}
             \ &p \equiv q \implies p \sim q \\
         \iff\ &\equiv\ \mathrm{finer\ than}\ \sim
     \end{align*}
+
+    In other words, $\equiv$ creates finer partitions on its domain compared to $\sim$. 
 \end{definition}
+
+\paragraph*{Trace Equivalence}
+\begin{definition}[path]
+    A \textbf{path} of a process $p$ is an alternating sequence of states and transitions starting from state $p$. It can be infinite or ending in a state. 
+    
+    A path is \textbf{complete} if it is either infinite or ends in a state where no further transitions are possible -- a maximal path.
+\end{definition}
+
+\begin{definition}[complete trace]
+    A \textbf{complete trace} of process $p$ is the sequence of labels of transitions in a complete path. 
+    
+    The set of finite complete traces of process $p$ is denoted as ${CT}^{fin}(p)$, while the set of all finite/infinite complete traces of $p$ is ${CT}^{\infty}(p)$ -- aka. $CT(p)$ from now on.
+\end{definition}
+
+\begin{example}[${CT}^{\infty}$]
+    \begin{equation*}
+        {CT}^{\infty}(a.(\varepsilon + b.\delta)) = \{a\checkmark, ab\}
+    \end{equation*}
+\end{example}
+
+\begin{definition}[partial trace]
+    Likewise, a \textbf{partial trace} of a process $p$ is the sequence of labels of transitions in any partial path. 
+
+    We also likewise define ${PT}^{fin}(p)$ and ${PT}^{\infty}(p)$ for some process $p$. Define $PT(p)$ as ${PT}^{fin}(p)$. 
+\end{definition}
+
+\begin{definition}[$=_{PT}$]
+    Processes $p, q$ are \textbf{partial trace equivalent} ($p =_{PT} q$) if they have the same partial traces: 
+    \begin{equation*}
+        p =_{PT} q \iff PT(p) = PT(q)
+    \end{equation*}
+
+    Mirroring the differences between ${PT}^{fin}$ and ${PT}^{\infty}$, define \textbf{finitary partial trace equivalence} ($=_{{PT}^{fin}}$) and \textbf{infinitary partial trace equivalence} ($=_{{PT}^{\infty}}$).
+\end{definition}
+
+\begin{definition}[$=_{CT}$]
+    Processes $p, q$ are \textbf{complete trace equivalent} ($p =_{CT} q$) if \underline{moreover} they have the same complete traces: 
+    \begin{equation*}
+        p =_{CT} q \iff CT(p) = CT(q)
+    \end{equation*}
+
+    Mirroring the differences between ${CT}^{fin}$ and ${CT}^{\infty}$, define \textbf{finitary complete trace equivalence} ($=_{{CT}^{fin}}$) and \textbf{infinitary complete trace equivalence} ($=_{{CT}^{\infty}}$).
+\end{definition}
+
+\paragraph*{Weak Equivalences and $\tau$-actions}
+\begin{definition}[strong equivalence]
+    A \textbf{strong equivalence} relation treats $\tau$ like any other (observable) action. 
+
+    We assume above definitions for e.g., $=_{PT}$ to be assuming strong equivalence. 
+\end{definition}
+
+\begin{definition}[weak equivalence]
+    In its mirror case, a \textbf{weak equivalence} treats $\tau$ as if it is omitted from the input processes. 
+
+    We additionally define weak variants of the above 4 equivalences: $=_{{WPT}^{fin}}$, $=_{{WPT}^{\infty}}$, $=_{{WCT}^{fin}}$, $=_{{WCT}^{\infty}}$. 
+\end{definition}
+
+\paragraph*{Bisimulation Equivalence}
+\begin{definition}[bisimulation]
+    Let $A, P$ define the actions and predicates of an LTS (in addition to states, etc.). A \textbf{bisimulation} is a binary relation $\circ \subseteq S \times S$ satisfying: 
+    \begin{itemize}
+        \item $
+            s \circ t \implies 
+            (\forall p \in P: s \models p \iff t \models p)
+        $
+        \item $
+            s \circ t \wedge (\exists a \in A: s \xrightarrow{a} s^{'}) \implies
+            (\exists t^{'}: t \xrightarrow{a} t^{'}) \wedge s^{'} \circ t^{'}
+        $
+        \item $
+            s \circ t \wedge (\exists a \in A: t \xrightarrow{a} t^{'}) \implies
+            (\exists s^{'}: s \xrightarrow{a} s^{'}) \wedge s^{'} \circ t^{'}
+        $
+    \end{itemize}
+
+    Bisimulation (aka. \textbf{bisimulation equivalence}) is an equivalence relation. In general, bisimulation differentiates branching structure of processes.  
+\end{definition}
+
+\begin{definition}[bisimilarity]
+    Two states $s, t$ are bisimilar ($s \underline{\leftrightarrow} t$) if such a bisimulation $\circ$ exists between $s, t$.
+\end{definition}
+
+\begin{definition}[branching bisimulation]
+    Given $A, P$ upon LTS, weaken \underline{bisimulation} as follows: a \textbf{branching bisumlation} is a binary relation $\circ \subseteq S \times S$ satisfying: 
+    \begin{enumerate}
+        \item {$
+            s \circ t \wedge (\exists p \in P: s \models p) \implies
+            \exists t_1: t \rightsquigarrow t_1 \models p \wedge s \circ t_1
+        $ \label{def.bbeq.sat.1}}
+        \item {$
+            s \circ t \wedge (\exists p \in P: t \models p) \implies
+            \exists s_1: s \rightsquigarrow s_1 \models p \wedge s_1 \circ t
+        $ \label{def.bbeq.sat.2}}
+        \item {$
+        \begin{aligned}
+            &s \circ t \wedge (\exists a \in A_{\tau}: s \xrightarrow{a} s^{'}) \\
+            \implies &\exists t_1, t_2, t^{'}: t \rightsquigarrow t_1 \xrightarrow{(a)} t_2 = t^{'} \wedge s \circ t_1 \wedge s^{'} \circ t^{'}
+        \end{aligned}
+        $ \label{def.bbeq.sat.3}}
+        \item {$
+        \begin{aligned}
+            &s \circ t \wedge (\exists a \in A_{\tau}: t \xrightarrow{a} t^{'}) \\
+            \implies &\exists s_1, s_2, s^{'}: s \rightsquigarrow s_1 \xrightarrow{(a)} s_2 = s^{'} \wedge s_1 \circ t \wedge s^{'} \circ t^{'}
+        \end{aligned}
+        $ \label{def.bbeq.sat.4}}
+    \end{enumerate}
+    where: 
+    \begin{itemize}
+        \item $
+        \begin{aligned}
+            &s \rightsquigarrow s^{'}  \\
+            \iff &\exists n \ge 0: \exists s_0, \dots, s_n: 
+            s = s_0 \xrightarrow{\tau} \dots \xrightarrow{\tau} s_n = s^{'}
+        \end{aligned}
+        $
+        \item $
+            A_{\tau} \coloneq A \cup \{\tau\}
+        $
+        \item $
+            s \xrightarrow{(a)} s^{'} \coloneq 
+            \begin{cases*}
+                s \xrightarrow{a} s^{'}                   & if $a \in A$ \\
+                s \xrightarrow{\tau} s^{'} \vee s = s^{'} & if $a = \tau$
+            \end{cases*}
+        $
+    \end{itemize}
+
+    Two processes $p, q$ are branching bisimilar ($p \underline{\leftrightarrow}_{b} t$) if such a binary relation $\circ$ exists.
+\end{definition}
+
+\begin{definition}[delay bisimulation]
+    Given $\underline{\leftrightarrow}_{b}$, drop requirements $s \circ t_1$ and $s_1 \circ t$, thus producing $\underline{\leftrightarrow}_{d}$.
+\end{definition}
+
+\begin{definition}[weak bisimulation]
+    Given $\underline{\leftrightarrow}_{b}$, 
+    \begin{itemize}
+        \item Drop requirements $s \circ t_1$, $s_1 \circ t$; 
+        \item Relax $t_2 = t^{'}$ and $s_2 = s^{'}$ to $t_2 \rightsquigarrow t^{'}$ and $s_2 \rightsquigarrow s^{'}$, respectively.
+    \end{itemize}
+    Thus producing $\underline{\leftrightarrow}_{w}$.
+\end{definition}
+
+\paragraph*{Language Equivalence} This paragraph is moved here for ergonomics.
+\begin{definition}[language equivalence]
+    Processes $p, q$ are \textbf{language equivalent} if they have the same traces leading to terminating states -- i.e., equal subset of terminating partial traces. 
+
+    Intuitively (and indeed) this is coarser than partial trace equivalence. 
+\end{definition}
+
+\paragraph*{Overview: The Hasse Diagram}
+\dots
+
 
 \end{document}

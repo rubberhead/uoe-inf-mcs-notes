@@ -1,0 +1,28 @@
+\documentclass[99-notes-packed.tex]{subfiles}
+
+\begin{document}
+\paragraph*{HML}
+Let $\varphi, \psi$ be HML expressions: 
+\begin{equation*}
+    \varphi, \psi \Coloneqq 
+    \top\ |\ \bot\ |\ \neg \varphi\ |\ \varphi \wedge \psi\ |\ 
+    \varphi \vee \psi \ |\ \langle A\rangle \Phi \ |\ [A] \Phi
+\end{equation*}
+where $\Phi$ denotes predicates. 
+
+We omit explanation of familiar syntactic elements from FOL. Besides them: 
+\begin{align*}
+    P \models [A]\Phi &\iff 
+    \forall Q: (\exists a \in A: P \xrightarrow{a} Q) \implies (Q \models \Phi) \\
+    P \models \langle A\rangle \Phi &\iff 
+    \exists Q: \exists a \in A: P \xrightarrow{a} Q \wedge Q \models \Phi
+\end{align*}
+
+\begin{example}[deadlock in HML]
+    Given set of all actions $A$, a process $P$ deadlocks if this holds:  
+    \begin{equation*}
+        P \models [A]\bot
+    \end{equation*}
+\end{example}
+
+\end{document}

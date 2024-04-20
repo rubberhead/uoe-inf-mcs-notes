@@ -4,7 +4,6 @@
 \usepackage[T1]{fontenc}
 \usepackage[a4paper, margin=0.25cm, landscape]{geometry}
 
-
 \usepackage{multicol}                       % 2-col formatting
 \usepackage{hyperref}
 \usepackage[english]{babel}                 % theorem environ
@@ -17,6 +16,7 @@
 \usepackage{ebproof}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{cancel}
 
 \usepackage{subfiles}                       % multi-file project
 
@@ -24,6 +24,7 @@
 \newtheorem{definition}{Definition}[section]
 \newtheorem{background}{Background}[section]
 \newtheorem{example}{Example}[section]
+\newtheorem{theorem}{Theorem}[section]
 
 \begin{document}
 \begin{multicols*}{3}
@@ -39,6 +40,21 @@
 
 \section{Equational Axiomisation}
 \subfile{04-congruence.tex}
+
+\section{CSP; SOS}
+\subfile{05-csp.tex}
+
+\section{Hennessy-Miller Logic}
+\subfile{06-hml.tex}
+
+\section{Preorder and Simulation}
+\subfile{07-preorder.tex}
+
+\section{LTL; CTL; Kripke Structure}
+\subfile{08-ltl-ctl-kripke.tex}
+
+\section{Petri Net; Concurrency Semantics}
+\subfile{09-concurrency.tex}
 
 \end{multicols*}
 \end{document}

@@ -58,10 +58,12 @@ Same goes for operators in e.g, CCS:
 
 \begin{definition}[CCS: expansion theorem]
     Suppose: 
-    \begin{align*}
-        P \coloneqq& \sum_{i \in I} a_i.P_i \\
-        Q \coloneqq& \sum_{j \in J} b_i.Q_j
-    \end{align*}
+    \begin{center}
+        \begin{tabular}{cc}
+            $P \coloneqq \sum_{i \in I} a_i.P_i$ &
+            $Q \coloneqq \sum_{j \in J} b_i.Q_j$
+        \end{tabular}
+    \end{center}
 
     Then, 
     \begin{align*}
@@ -97,20 +99,64 @@ Same goes for operators in e.g, CCS:
 \paragraph*{Rooted Bisimilarity}
 We note that depending on semantics of $\mathcal{L}$, equivalences may (and in fact likely) fail to be a congurence over $\mathcal{L}$. This also is the case for e.g., branching bisimilarity: $\tau.a =_{BB} a$ but $\tau.a + b \ne_{BB} a + b$. 
 
-ACP and CCS fixes this by changing the equivalence operator. 
-
+ACP and CCS fixes this by changing the equivalence operator. CSP fixes this by foregoing the $+$ operator.
 \begin{definition}[Rooted Branching Bisimilarity]
     \begin{align*}
         P =_{rBB} Q \iff &(P \xrightarrow{a} P^{'} \implies Q \xrightarrow{a} Q^{'} \wedge P^{'} =_{BB} Q^{'})\ \wedge \\
         &(Q \xrightarrow{a} Q^{'} \implies P \xrightarrow{a} P^{'} \wedge P^{'} =_{BB} Q^{'})
     \end{align*}
+
+    $=_{rBB}$ is equivalent to branching bisimulation congruence $=_{BB}^c$ over ACP.
 \end{definition}
 
 \begin{definition}[Rooted Weak Bisimilarity]
     \begin{align*}
-        P =_{rWB} Q \iff &(P \xrightarrow{a} P^{'} \implies Q \xrightarrow{a} Q^{'} \wedge P^{'} =_{WB} Q^{'})\ \wedge \\
-        &(Q \xrightarrow{a} Q^{'} \implies P \xrightarrow{a} P^{'} \wedge P^{'} =_{WB} Q^{'})
+        P =_{rWB} Q \iff &(P \xrightarrow{a} P^{'} \implies Q \xrightarrow{\tau \ast a \tau \ast} Q^{'} \wedge P^{'} =_{WB} Q^{'})\ \wedge \\
+        &(Q \xrightarrow{a} Q^{'} \implies P \xrightarrow{\tau \ast a \tau \ast} P^{'} \wedge P^{'} =_{WB} Q^{'})
     \end{align*}
+
+    $=_{rWB}$ is equivalent to weak bisimulation congruence $=_{WB}^c$ over CCS.
+\end{definition}
+
+\begin{definition}[Eq. axiomisation for rBB, rWB] 
+    $=_{rWB}$ is axiomatised as follows: 
+    \begin{align}
+        a.\tau.P &= a.P \\
+        \tau.P &= \tau.P + P \\
+        a.(\tau.P + Q) &= a.(\tau.P + Q) + a.P
+    \end{align}
+
+    $=_{rBB}$ is axiomatised as follows: 
+    \begin{equation*}
+        a.(\tau.(P + Q) + Q) = a.(P + Q)
+    \end{equation*}
+\end{definition}
+
+\paragraph*{Strongly/Weakly Guarded Recursions}
+Recall that a recursive spec of the form e.g. $X = a.(b + X)$ is guarded -- $X$ exists as a subexpression of $X$ -- and are equivlent modulo strong bisimilarity (viz. RSP). 
+
+On the other hand $X = \tau.X$ has solely equivalent solutions modulo $=_{B}$ but not up to e.g. $=_{rBB}$. This breaks the equivalence lattice -- we hence need a stronger concept of \underline{unguardedness} for $=_{B}$.
+
+\begin{definition}[strong unguardedness]
+    A \textbf{strongly unguarded} recursive specification is one where, for
+    \begin{equation*}
+        X = \mathsf{Expr}(X, \dots)
+    \end{equation*}
+    the recursive variable $X$ occurs NOT in a subterm of the form: 
+    \begin{equation*}
+        a \leftarrow A \cup \{\tau\}: a.P^{'}, X \in P^{'}
+    \end{equation*}
+    as in, $X$ is not guarded by $\forall a \in A$ nor $\tau$. 
+
+    It turns out that \textbf{RSP is sound modulo bisimulation for all non-strongly-unguarded recursive specifications}. 
+\end{definition}
+
+\begin{definition}[weak unguardedness]
+    Likewise, a \textbf{weakly unguarded} recursive specification is one where recursive variable $X$ is NOT guarded by $\forall a \in A$ only. 
+
+    Note that strong unguardedness entails weak unguardedness.
+
+    \textbf{RSP is sound modulo weak/branching bisimulation for all non-weakly-unguarded recursive specifications}. 
 \end{definition}
 
 \end{document}

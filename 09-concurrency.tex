@@ -1,0 +1,53 @@
+\documentclass[99-notes-packed.tex]{subfiles}
+
+\begin{document}
+\paragraph*{Concurrency Semantics} Define the following semantics of interest wrt. concurrency theory: 
+\begin{enumerate}
+    \item {
+        \textbf{Interleaving Semantics}: concurrent actions $a$, $b$ occur in one of the following orders: 
+        \begin{itemize}
+            \item $a; b$
+            \item $b; a$
+        \end{itemize}
+    }
+    \item {
+        \textbf{Step Semantics}: concurrent actions $a$, $b$ occur in one of the following orders: 
+        \begin{itemize}
+            \item $a; b$
+            \item $b; a$
+            \item $a || b$ (in parallel)
+        \end{itemize}
+    }
+    \item {
+        \textbf{Interval Semantics}: concurrent actions $a$, $b$ occur in continuous time, such that $a$, $b$ may occur in parallel for a subset of total runtime. 
+    }
+    \item {
+        \textbf{Partial-order (aka. Causal) Semantics}: concurrent actions $a$, $b$ not only can occur in parallel for some continuous time interval, but can also intersperse as unspecified segments (e.g., OS scheduling). 
+
+        Nevertheless, causal relationships between $a, b, \dots$ are preserved -- $a$ calling e.g. \texttt{fork()} will posit a partial ordering before the spawned task $b$, though the exact concurrency behaviors leave much leeway to the OS scheduler.
+    }
+\end{enumerate}
+
+\begin{definition}[Pomset]
+    A \textbf{pomset (partial-ordered multiset)} defines a $(E, <, l)$-tuple where:
+    \begin{itemize}
+        \item $E$ a set of ``events'' -- corresponding to each occurrence of action. 
+        \item $<$ a partial-order of E -- $e_i$ happens before $e_j$, or incomparable, etc.
+        \item $l: E \rightarrow A$ a mapping between events to their actions. 
+    \end{itemize}
+
+    A normal trace thus becomes a totally ordered multiset of actions, compared to a pomset representation. 
+\end{definition}
+
+\paragraph*{Petri Net} captures the dynamism within parallel systems. It defines a $(S, T, F, I)$-tuple where: 
+\begin{itemize}
+    \item $S, T$ define \underline{places} and actions grouped in bipartite form. 
+    \item $F \subseteq (S \times T) \cup (T \times S)$ set of transitions.
+    \item $I: S \rightarrow \mathbb{N}$ (initial marking) defines the initial state of control, via allocating tokens to initial states. Subsequent states of control is referred to as \textbf{marking} in general.
+\end{itemize}
+
+\begin{definition}[Control \& Tokens]
+    Petri nets encode control at runtime. A \textbf{control} simply refers to the state at which the system is currently at. It is symbolized by a \textbf{token} for each concurrent state. 
+\end{definition}
+
+\end{document}

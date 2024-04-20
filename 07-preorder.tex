@@ -1,0 +1,53 @@
+\documentclass[99-notes-packed.tex]{subfiles}
+
+\begin{document}
+\paragraph*{Preorder}
+Remember equivalence? Meet its lesser sibling, preorder: 
+
+\begin{definition}[Preorder]
+    A \textbf{preorder} ($\sqsubseteq$) denotes a \underline{transitive, reflexive} relation on a set. 
+    
+    Crucially, preorder is \underline{NOT symmetrical} compared to equivalence. 
+
+    For example, $\le$ is a preorder over $\mathbb{R}$ (in fact, a partial-order).
+\end{definition}
+
+We define preorders in relation of equivalences already defined in this course. For example, partial trace preorder $\sqsubseteq_{PT}$: 
+\begin{equation*}
+    P \sqsubseteq_{PT} Q \iff PT(P) \supseteq PT(Q)
+\end{equation*}
+where $Q$ becomes a \textbf{refinement} of $P$ -- all properties of $P$ must hold for $Q$, while $Q$ can hold more properties than $P$. 
+
+In general, we want to prove: 
+\begin{equation*}
+    \mathrm{Spec} \sqsubseteq_{\sim} \mathrm{Impl}
+\end{equation*}
+
+\begin{definition}[Kernel]
+    For each preorder $\sqsubseteq_{\sim}$ there exists an associated equivalence relation $\equiv_{\sim}$: 
+    \begin{equation*}
+        P \equiv Q \iff P \sqsubseteq Q \wedge Q \sqsubseteq P
+    \end{equation*}
+    If this holds, $P, Q$ are \textbf{kernels} of each other.
+\end{definition}
+
+\paragraph*{Simulation}
+A \textbf{simulation} relation expresses a preorder between two processes $P, Q$ such that: 
+\begin{equation*}
+    P \sqsubseteq_{S} Q \iff \forall (P \xrightarrow{a} P^{'}): \exists (Q \xrightarrow{a} Q^{'}): P^{'} \sqsubseteq_{S} Q^{'}
+\end{equation*}
+
+Using definitions for general preorders, define \textbf{simulation equivalence} as follows: 
+\begin{equation*}
+    P \equiv_{S} Q \iff P \sqsubseteq_{S} Q \wedge Q \sqsubseteq_{S} P 
+\end{equation*}
+
+\begin{example}[$\equiv_{S}$ vs. $=_{B}$]
+    Simulation equivalence is NOT equivalent to bisimulation. Case in point: 
+    \begin{align*}
+        P &\coloneqq a.b + a.(b + c) \\
+        Q &\coloneqq a.(b + c)
+    \end{align*}
+\end{example}
+
+\end{document}

@@ -1,0 +1,91 @@
+\documentclass[99-notes-packed.tex]{subfiles}
+
+\begin{document}
+\paragraph*{CSP}
+Introduce the following operations: 
+\begin{enumerate}
+    \item {
+        $0$ or $\mathsf{STOP}$ (inaction).
+
+        Likewise CCS, a graph with 1 (initial) state, 0 transitions. 
+    }
+    \item {
+        $a.P$ or $a \rightarrow P$ (action prefix) for $\forall a \in A$. 
+
+        Likewise CCS.
+    }
+    \item {
+        $P \square Q$ (external choice). 
+
+        Semantically it is similar to parallel composition without synchronization, where: 
+        \begin{itemize}
+            \item {
+                Prior to ``choice'', one of the two actions might happen between the processes.
+            }
+            \item {
+                After one of the action happens, only the choiced process may occur at runtime. 
+            }
+        \end{itemize}
+    }
+    \item {
+        $P \sqcap Q$ (internal choice):
+        \begin{equation*}
+            \mathrm{CSP}[P \sqcap Q] \equiv \mathrm{CCS}[\tau.P + \tau.Q]
+        \end{equation*}
+    }
+    \item {
+        $P {||}_{S} Q$ (parallel composition) with enforced synchronization over $S \subseteq A$. Semantically speaking: 
+        \begin{itemize}
+            \item $
+                \mathsf{States}(P {||}_{S} Q) \coloneqq
+                \mathsf{States}(P) \times \mathsf{States}(Q)
+            $
+            \item {
+                $(s, t) \xrightarrow{a} (s^{'}, t)$ if 
+                $(a \notin S) \wedge (s \xrightarrow{a} s^{'} \in P)$
+            }
+            \item {
+                $(s, t) \xrightarrow{a} (s, t^{'})$ if 
+                $(a \notin S) \wedge (t \xrightarrow{a} t^{'} \in Q)$
+            }
+            \item {
+                $(s, t) \xrightarrow{a} (s^{'}, t^{'})$ if 
+                $(a \in S) \wedge (s \xrightarrow{a} s^{'} \in P) \wedge (t \xrightarrow{a} t^{'} \in Q)$
+            }
+        \end{itemize}
+    }
+    \item {
+        $P/a$ (concealment).
+
+        Like CCS, rename $a$ into $\tau$. 
+    }
+    \item {
+        $P[f]$ (renaming) for $f \in (A \rightarrow A)$
+
+        Likewise CCS.
+    }
+\end{enumerate}
+
+Weak and branching bisimulation are congurences for CSP.
+
+\paragraph*{GSOS}
+As a general form over languages, GSOS describes a transition rule of the following form: define 
+\begin{itemize}
+    \item {
+        $\Sigma$ be the collection of function symbols wrt. a language. 
+    }
+    \item {
+        $\mathsf{arity}: \Sigma \rightarrow \mathbb{N}$ a function exposing the arity of the function symbol in question.
+    }
+\end{itemize}
+then, under GSOS semantics, the language could be expressed as follows: 
+\begin{equation*}
+    \begin{prooftree}
+        \hypo{x_i \xrightarrow{a} y_i, \dots\ (f \in \Sigma, i \in [1, \mathsf{arity}(f)], y_i \notin \mathsf{args}(f))}
+        \infer1{f(x_1, \dots, x_{\mathsf{arity}(f)}) \xrightarrow{a} \mathsf{Expr}(x_1, \dots, x_{\mathsf{arity}(f)}, y_i, \dots)}
+    \end{prooftree}
+\end{equation*}
+
+It is the generalization of SOS rules we have covered earlier.
+
+\end{document}

@@ -1,0 +1,101 @@
+\documentclass[99-notes-packed.tex]{subfiles}
+
+\begin{document}
+\paragraph*{LTL}
+Let $\phi, \psi$ be LTL expressions, $p \in AP$ an atomic predicate, $\rightarrow^\ast$ indicating 0 or more steps (like regex):
+\begin{align*}
+    \phi, \psi \Coloneqq&\ p\ |\ \top\ |\ \bot\ |\ \phi \wedge \psi\ |\ \phi \vee \psi\ |\ \neg \phi\ |\ \phi \implies \psi \\
+    |&\ X \phi: 
+        \pi \models X \phi \iff 
+        \exists {\pi}^{'}: \pi \rightarrow {\pi}^{'} \models \phi \\
+    |&\ F \phi: 
+        \pi \models F \phi \iff
+        \exists {\pi}^{'}: \pi \rightarrow^\ast {\pi}^{'} \models \phi \\
+    |&\ G \phi: 
+        \pi \models G \phi \iff
+        \forall {\pi}^{'}: (\pi \rightarrow^\ast {\pi}^{'}) \implies ({\pi}^{'} \models \phi) \\ 
+    |&\ \phi U \psi: \pi_0 \models \phi U \psi \\
+     &  \iff \exists \pi_0 \rightarrow^\ast P \models \psi: \forall \pi_i \in \pi_0 \rightarrow^\ast \pi_N \rightarrow \Pi: \pi_i \models \phi \\
+    |&\ \phi W \psi: 
+        \pi \models \phi W \psi \iff \pi \models (\phi U \psi) \vee (G \phi)
+\end{align*}
+
+\paragraph*{CTL}
+Orthogonally (in terms of expressibility), CTL prefixes all $X | F | G | U$ operators with temporal signifiers: 
+\begin{align*}
+    A \sim \forall&:\ \textrm{for all paths} \\
+    E \sim \exists&:\ \textrm{exists some path} 
+\end{align*}
+
+\begin{example}[incomparability of CTL, LTL]
+    No LTL equivalent exists for CTL formula $AG(EF a)$. Likewise, no CTL equivalent exists for LTL formula $F(G a)$. 
+\end{example}
+
+\paragraph*{Kripke Structure} is an alternative means of representing a transition system. Let $AP$ be a set of atomic predicates. A Kripke structure over $AP$ is a tuple $(S, \rightarrowtriangle, \models)$ where: 
+\begin{itemize}
+    \item $S$: set of state.
+    \item $\rightarrowtriangle \subseteq S \times S$: transition relation. 
+    \item $\models \subseteq S \times AP$: state-predicate mapping. 
+\end{itemize}
+
+LTL and CTL operate upon Kripke structures. 
+
+A state $s \models \phi$ if for all paths incident from $s$, each path satisfies $\phi$.
+
+\paragraph*{LTS-Kripke Translation}
+A translation system $\eta$ maps states in LTSs to states in Kripke structures. This allows us to perform LTL/CTL validation on LTS: 
+\begin{equation*}
+    P \models_{\eta} \phi \iff \eta(P) \models \phi
+\end{equation*}
+
+\begin{definition}[De Nicola-Vaandrager Translation]
+    The \textbf{DV-translation} translates process graphs into Kripke structures. Let the process graph be defineed as $(S, I, \rightarrowtriangle)$, as was the case for LTS. 
+
+    The associated Kripke structure is $((S^{'}, I), \rightarrowtriangle^{'}, \models)$, where:
+    \begin{align*}
+        S^{'} \coloneqq& S \cup \{[s, a, t] \in \rightarrowtriangle | a \ne \tau\} \\
+        \rightarrowtriangle^{'} \coloneqq& 
+            \{(s, [s, a, t]), ([s, a, t], t) | [s, a, t] \in S^{'}\} \\
+            \cup& \{(s, t) | (s, \tau, t) \in \rightarrowtriangle \}
+    \end{align*}
+
+    In short, we create new states out of transitions due to visible actions, and create linkages accordingly. 
+\end{definition}
+
+\begin{theorem}
+    Processes $P, Q$ satisfy the same LTL formulas if: 
+    \begin{equation*}
+        P =_{CT}^{\infty} Q
+    \end{equation*}
+    Moreover, finitely-branching processes $P, Q$ satisfies \textbf{iff}.
+\end{theorem}
+
+\begin{theorem}
+    Processes $P, Q$ satisfy the same $LTL_{-X}$ formulas (i.e., LTL without $X$) if: 
+    \begin{equation*}
+        P =_{WCT}^{\infty} Q
+    \end{equation*}
+\end{theorem}
+
+\begin{theorem}
+    Processes $P, Q$ satisfy the same CTL formulas if: 
+    \begin{equation*}
+        P =_{B} Q
+    \end{equation*}
+    Moreover, finitely-branching processes satisfies \textbf{iff}. 
+
+    On the otherhand, when CTL is expanded to $CTL^{\infty}$ (i.e., CTL with infinite $\wedge$), all processes also satisfy \textbf{iff}. 
+\end{theorem}
+
+\begin{theorem}
+    A \textbf{divergence-free} process is one where no reachable state $p$ has $p \xrightarrow{\tau^\infty} !$ -- infinite $\tau$s. 
+    
+    Two \textbf{divergence-free} processes $P, Q$ satisfy the same ${CTL}_{-X}$ formulas if: 
+    \begin{equation*}
+        P =_{BB} Q
+    \end{equation*}
+
+    Moreover, when CTL is adjusted to ${CTL}^{\infty}_{-X}$, we have \textbf{iff}. Same goes if $P, Q$ are additionall finitely branching. 
+\end{theorem}
+
+\end{document}

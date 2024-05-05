@@ -32,7 +32,7 @@
     A \textbf{pomset (partial-ordered multiset)} defines a $(E, <, l)$-tuple where:
     \begin{itemize}
         \item $E$ a set of ``events'' -- corresponding to each occurrence of action. 
-        \item $<$ a partial-order of E -- $e_i$ happens before $e_j$, or incomparable, etc.
+        \item $<$ a partial-order of E such that $e_i$ happens before $e_j$, or incomparable, etc.
         \item $l: E \rightarrow A$ a mapping between events to their actions. 
     \end{itemize}
 
@@ -47,7 +47,75 @@
 \end{itemize}
 
 \begin{definition}[Control \& Tokens]
-    Petri nets encode control at runtime. A \textbf{control} simply refers to the state at which the system is currently at. It is symbolized by a \textbf{token} for each concurrent state. 
+    Petri nets encode control at runtime. A \textbf{control} simply refers to the state at which the system is currently at. It is represented as a assignment of \textbf{tokens} to each place in net i.e. a \textbf{marking}. 
+\end{definition}
+
+\paragraph*{Progress, Justness, Fairness} We define several properties on concurrent systems to make claim they display good behaviors. 
+
+\begin{definition}[Safety]
+    A \textbf{safety property} defines that a ``bad'' predicate $\phi$ would never hold -- e.g., $P \models G(\neg \phi)$. 
+\end{definition}
+
+\begin{definition}[Liveness]
+    A \textbf{liveness property} defines that a ``good'' predicate $\phi$ would eventually hold -- e.g., $P \models F(\phi)$. 
+\end{definition}
+
+It's easy to see that safety and liveness properties are duo/convertible to each other -- $G(\neg \phi) \iff \neg F(\phi)$, after all. Hence we can speak of them in common contexts.
+
+Whether safety/liveness properties hold in a system depends often on whether we make appropriate progress and fairness assumptions (in increasing hierarchy): 
+
+\begin{background}[Completeness Criteria]
+    LTL is a \textbf{linear-time logic} that specifies \textbf{linear-time properties} on paths in a Kripke structure. For example, $F(\phi)$ really means that, within each/a path, a state marked with proposition $\phi$ eventually occurs within the path string. 
+
+    We hence expand the satisfaction idea such that a process $P$ satisfies a LTL property $\varphi$ under a \textbf{completeness criterion} $C$: 
+    \begin{equation*}
+        P \models^{C} \varphi \iff \forall\ \mathrm{path}\ \pi \in P: \pi \models C \implies \pi \models \varphi
+    \end{equation*}
+
+    For example, $C$ might refer to the assumption that a path is infinite -- \textbf{deadlock-free}, as a finite path occurs only if we reach a state without outgoing transitions. This is often the \textbf{default completeness criterion} when unspecified -- in which case we simply use $\models$ without superscript. 
+
+    A completeness criterion $D$ is \textbf{stronger} than $C$ if: 
+    \begin{equation*}
+        \{\pi\ |\ \pi \in \mathsf{path}(P), \pi \models D\} \subset \{\pi\ |\ \pi \in \mathsf{path}(P), \pi \models C\}
+    \end{equation*}
+\end{background}
+
+We hence define the following completeness criteria in increasing strength (or reverse implication chain): 
+
+\begin{definition}[Progress]
+    
+\end{definition}
+
+\begin{definition}[Justness]
+    
+\end{definition}
+
+\begin{definition}[Weak Fairness]
+    Define a \textbf{task} to be a set of transitions in a Kripke structure (you can think of it as a subprocedure in a program). Append the Kripke structure $(S, \rightarrowtriangle, I)$ with a novel structure $\tau$: 
+    \begin{equation*}
+        \tau \coloneqq \textrm{Collection of tasks}
+    \end{equation*}
+
+    A task $T$ is \textbf{enabled} in state $s \in S$ if there exists an outgoing transition from $s$ that is also in $T$. $T$ is \textbf{perpetually enabled} on path $\pi$ if it is enabled in every state of $\pi$ (i.e., every state in $\pi$ contains outgoing transition in $T$). 
+    
+    Orthogonally, if a $T$-transition exists \underline{in} $\pi$ then $T$ \textbf{occurs} in $\pi$.
+
+    A path $\pi$ is hence \textbf{weakly fair} if it satisfies the following LTL formula:
+    \begin{alignat*}{2}
+        \mathsf{WF}(T) 
+        &\coloneqq &&\ G(\ G(\mathsf{enabled}(T)) \implies F(\mathsf{occurs(T)})\ ) \\ 
+        &\Leftrightarrow &&\ F(G(\mathsf{enabled}(T))) \implies G(F(\mathsf{occurs}(T)))
+    \end{alignat*}
+    where predicates $\mathsf{enabled}$, $\mathsf{occurs}$ follow above definition -- a state $s$ is marked with $\mathsf{enabled}(T)$ iff $T$ is enabled at state $s$ i.e. exists outgoing transition from $s$ that is also in $T$.
+
+    Hence, define $\models^{WF}$ as: 
+    \begin{equation*}
+        P \models^{WF} \varphi \iff P \models [\wedge_{T \in \tau} {(\mathsf{WF}(T))}] \implies \varphi
+    \end{equation*}
+\end{definition}
+
+\begin{definition}[Strong Fairness]
+    
 \end{definition}
 
 \end{document}

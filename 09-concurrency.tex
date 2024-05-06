@@ -83,12 +83,12 @@ Whether safety/liveness properties hold in a system depends often on whether we 
 We hence define the following completeness criteria in increasing strength (or reverse implication chain): 
 
 \begin{definition}[Progress]
-    
+    In a \textbf{closed system} (i.e., without external influence of transition decisions), the \textbf{progress} assumption assumes that we will not stay forever in a state with an outgoing transition -- i.e., a finite path is complete iff it ends in a state without outgoing transitions.
+
+    To show this is weaker than weak fairness, simply show that task $T$ cannot occur whatsoever in last state of a non-progress path (because it is enabled, but trivially not occurred -- because of non-progression past that state). 
 \end{definition}
 
-\begin{definition}[Justness]
-    
-\end{definition}
+There is also \textbf{justness} but this was not covered in lecture.
 
 \begin{definition}[Weak Fairness]
     Define a \textbf{task} to be a set of transitions in a Kripke structure (you can think of it as a subprocedure in a program). Append the Kripke structure $(S, \rightarrowtriangle, I)$ with a novel structure $\tau$: 
@@ -103,9 +103,14 @@ We hence define the following completeness criteria in increasing strength (or r
     A path $\pi$ is hence \textbf{weakly fair} if it satisfies the following LTL formula:
     \begin{alignat*}{2}
         \mathsf{WF}(T) 
-        &\coloneqq &&\ G(\ G(\mathsf{enabled}(T)) \implies F(\mathsf{occurs(T)})\ ) \\ 
+        &\coloneqq &&\ G[G(\mathsf{enabled}(T)) \implies F(\mathsf{occurs(T)})] \\ 
         &\Leftrightarrow &&\ F(G(\mathsf{enabled}(T))) \implies G(F(\mathsf{occurs}(T)))
     \end{alignat*}
+
+    \begin{quote}
+        Read it in this way: if, after some $s \in \pi$, part of T can always happen for $s^{'} \in \pi^{'}$ (i.e., perpetually enabled), then at least some part of T \underline{will} happen in $\pi^{'}$.
+    \end{quote}
+
     where predicates $\mathsf{enabled}$, $\mathsf{occurs}$ follow above definition -- a state $s$ is marked with $\mathsf{enabled}(T)$ iff $T$ is enabled at state $s$ i.e. exists outgoing transition from $s$ that is also in $T$.
 
     Hence, define $\models^{WF}$ as: 
@@ -115,7 +120,19 @@ We hence define the following completeness criteria in increasing strength (or r
 \end{definition}
 
 \begin{definition}[Strong Fairness]
+    A task $T$ is \textbf{relentlessly enabled} on $\pi$ if for every suffix of $\pi$ there exists a state $s^{'}$ where $T$ is enabled (note the difference between perpetually enabled). 
+
+    A path $\pi$ is hence \textbf{strongly fair} if it satisfies the following LTL formula: 
+    \begin{alignat*}{2}
+        \mathsf{SF}(T) &\coloneqq\ && G[GF(\mathsf{enabled}(T)) \implies F(\mathsf{occurs}(T))] \\
+        &\Leftrightarrow\ && GF(\mathsf{enabled}(T)) \implies GF(\mathsf{occurs}(T))
+    \end{alignat*}
+
+    \begin{quote}
+        In other words: if, after some $s \in \pi$, part of T will always be available occasionally for some $s^{'} \in \pi^{'}$ (i.e., relentlessly enabled), then some part of T \underline{will} happen in $\pi^{'}$. 
+    \end{quote}
     
+    Likewise, define $\models^{SF}$ in mirror case of $\models^{WF}$. 
 \end{definition}
 
 \end{document}

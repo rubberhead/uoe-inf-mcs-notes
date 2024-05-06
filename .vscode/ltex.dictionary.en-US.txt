@@ -1,3 +1,0 @@
-satisfiability
-btwn
-impl
